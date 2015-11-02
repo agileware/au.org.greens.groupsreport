@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<menu>
-  <item>
-    <path>civicrm/groups-status-report</path>
-    <page_callback>CRM_Groupsreport_Page_GroupsReport</page_callback>
-    <title>GroupsReport</title>
-    <access_arguments>access CiviCRM</access_arguments>
-  </item>
-</menu>
