@@ -128,7 +128,7 @@ function groupsreport_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  * @return string $sql
  */
 function groupsReport_custom_field_disabled_sql() {
-  $sql = "SELECT cf.label as custom_field, 
+  $sql = "SELECT cf.label as custom_field,
     CONCAT(cg.table_name, '.', cf.column_name) as test_field, cg.title as custom_group
     FROM civicrm_custom_field cf
     INNER JOIN civicrm_custom_group cg ON cg.id = cf.custom_group_id
@@ -242,8 +242,20 @@ function groupsReport_problematic_groups_search() {
  */
 function groupsReport_civicrm_pageRun(&$page) {
   $pageName = $page->getVar('_name');
+  $groups = array();
   if ($pageName == 'CRM_Groupsreport_Page_GroupsReport') {
-    $groups = groupsReport_problematic_groups_search();
+    $problemGroups = groupsReport_problematic_groups_search();
+    $permissionGroups = civicrm_api3('group','get', array(
+      'is_active' => 1,
+      'check_permissions' => TRUE,
+      'return' => array('id'),
+      'options' => array('limit' => 0),
+    ));
+    foreach ($problemGroups as $group) {
+      if (array_key_exists($group['id'], $permissionGroups['values'])) {
+        $groups[] = $group;
+      }
+    }
     $page->assign('groups', $groups);
   }
 }
